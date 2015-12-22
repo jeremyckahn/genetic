@@ -6,6 +6,8 @@ define([
   ,'./view'
   ,'text!./template.mustache'
 
+  ,'genetic.component.canvas'
+
 ], function (
 
   Lateralus
@@ -13,6 +15,8 @@ define([
   ,Model
   ,View
   ,template
+
+  ,CanvasComponent
 
 ) {
   'use strict';
@@ -24,6 +28,12 @@ define([
     ,Model: Model
     ,View: View
     ,template: template
+
+    ,initialize: function () {
+      this.addComponent(CanvasComponent, {
+        el: this.view.$canvas[0]
+      });
+    }
   });
 
   return ContainerComponent;

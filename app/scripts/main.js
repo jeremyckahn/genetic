@@ -8,6 +8,9 @@ require.config({
       deps: ['jquery']
       ,exports: 'jquery'
     }
+    ,processing: {
+      exports: 'Processing'
+    }
   }
   ,paths: {
     text: 'bower_components/requirejs-text/text'
@@ -15,6 +18,7 @@ require.config({
     ,backbone: 'bower_components/backbone/backbone'
     ,underscore: 'bower_components/lodash/dist/lodash'
     ,mustache: 'bower_components/mustache/mustache'
+    ,processing: 'bower_components/Processing.js/processing'
   }
   ,packages: [{
     name: 'lateralus'
@@ -27,6 +31,9 @@ require.config({
   }, {
     name: 'genetic.component.container'
     ,location: 'scripts/components/container'
+  }, {
+    name: 'genetic.component.canvas'
+    ,location: 'scripts/components/canvas'
   }]
 });
 
