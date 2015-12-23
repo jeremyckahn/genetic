@@ -18,7 +18,7 @@ define([
   'use strict';
 
   // CONSTANTS
-  var MAX_TWEEN_DURATION = 1000 * 10;
+  var REPRODUCTION_MAX_DELAY = 1000 * 2;
   var VALID_EASING_CURVES = Object.keys(Tweenable.prototype.formula)
     .filter(function (formulaName) {
       return formulaName.match(/InOut/);
@@ -26,10 +26,13 @@ define([
 
   var Organism = Backbone.Model.extend({
     defaults: {
-      speed: 1
+      speed: 1000 * 10
+      ,minSpeed: 1000
       ,size: 20
       ,x: 0
       ,y: 0
+      ,minReproductionDelay: 1000
+      ,reproductionDelay: 0
     }
 
     /**
@@ -46,15 +49,21 @@ define([
       this.currentTween = null;
 
       this.set(_.defaults(_.clone(attrs), {
-        speed: Math.random() * this.get('speed')
+        speed: this.get('minSpeed') + (Math.random() * this.get('speed'))
         ,size: Math.random() * this.get('size')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
+        ,reproductionDelay: (
+          this.get('minReproductionDelay') +
+          (Math.random() * REPRODUCTION_MAX_DELAY)
+        )
       }));
 
-      this.tweenable = new Tweenable(this.pick('x', 'y'));
+      this.tweenable = new Tweenable();
       this.tweenable.setScheduleFunction(setTimeout);
       this.tweenToNewCoordinates();
+
+      setTimeout(this.reproduce.bind(this), this.get('reproductionDelay'));
     }
 
     ,updateState: function () {
@@ -65,7 +74,7 @@ define([
       var y = Math.random() * this.processing.height;
 
       this.currentTween = this.tweenable.tween({
-        duration: this.get('speed') * MAX_TWEEN_DURATION
+        duration: this.get('speed')
         ,from: { x: this.get('x'), y: this.get('y') }
         ,to: { x: x, y: y }
         ,step: this.onTweenStep.bind(this)
@@ -99,6 +108,11 @@ define([
         ,this.get('size')
         ,this.get('size')
       );
+    }
+
+    ,reproduce: function () {
+      this.collection.add(
+        new Organism(this.pick('x', 'y'), { processing: this.processing }));
     }
   });
 
