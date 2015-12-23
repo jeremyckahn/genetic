@@ -2,16 +2,27 @@ define([
 
   'lateralus'
 
+  ,'./genetic.util'
+
   ,'genetic.component.container'
+
+  // Silent import
+  ,'seedrandom'
 
 ], function (
 
   Lateralus
 
+  ,util
+
   ,ContainerComponent
 
 ) {
   'use strict';
+
+  if (util.getQueryParam('seed')) {
+    Math.seedrandom(util.getQueryParam('seed'));
+  }
 
   /**
    * @param {Element} el

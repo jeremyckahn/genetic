@@ -24,6 +24,7 @@ require.config({
     ,lodash: 'bower_components/lodash/dist/lodash'
     ,mustache: 'bower_components/mustache/mustache'
     ,processing: 'bower_components/Processing.js/processing'
+    ,seedrandom: 'bower_components/seedrandom/seedrandom'
   }
   ,packages: [{
     name: 'lateralus'
