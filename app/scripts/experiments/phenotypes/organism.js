@@ -102,14 +102,5 @@ define([
     }
   });
 
-  // var duplicateMethodNames = _.intersection(
-  //   _.keys(Tweenable.prototype)
-  //   ,_.keys(Backbone.Model.prototype)
-  // );
-  // _.extend(
-  //   Organism.prototype
-  //   ,_.omit.apply(_, [Tweenable.prototype].concat(duplicateMethodNames))
-  // );
-
   return Organism;
 });
