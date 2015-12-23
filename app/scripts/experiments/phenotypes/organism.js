@@ -13,7 +13,8 @@ define([
 
   var Organism = Backbone.Model.extend({
     defaults: {
-      speed: 0
+      speed: 5
+      ,size: 20
       ,x: 0
       ,y: 0
     }
@@ -31,8 +32,8 @@ define([
       this.processing = processing;
 
       this.set(_.defaults(_.clone(attrs), {
-        speed: Math.random() * 5
-        ,size: Math.random() * 20
+        speed: Math.random() * this.get('speed')
+        ,size: Math.random() * this.get('size')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
       }));
