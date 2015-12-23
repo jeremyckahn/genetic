@@ -18,7 +18,6 @@ define([
   'use strict';
 
   // CONSTANTS
-  var REPRODUCTION_MAX_DELAY = 1000 * 2;
   var VALID_EASING_CURVES = Object.keys(Tweenable.prototype.formula)
     .filter(function (formulaName) {
       return formulaName.match(/InOut/);
@@ -31,8 +30,8 @@ define([
       ,size: 20
       ,x: 0
       ,y: 0
-      ,minReproductionDelay: 1000
-      ,reproductionDelay: 0
+      ,stepsTillReproduction: 3
+      ,stepsTaken: 0
     }
 
     /**
@@ -53,17 +52,14 @@ define([
         ,size: Math.random() * this.get('size')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
-        ,reproductionDelay: (
-          this.get('minReproductionDelay') +
-          (Math.random() * REPRODUCTION_MAX_DELAY)
+        ,stepsTillReproduction: Math.floor(
+          (Math.random() * this.get('stepsTillReproduction')) + 1
         )
       }));
 
       this.tweenable = new Tweenable();
       this.tweenable.setScheduleFunction(setTimeout);
       this.tweenToNewCoordinates();
-
-      setTimeout(this.reproduce.bind(this), this.get('reproductionDelay'));
     }
 
     ,updateState: function () {
@@ -84,6 +80,13 @@ define([
           ,y: util.pickRandomFrom(VALID_EASING_CURVES)
         }
       });
+
+      var stepsTaken = this.get('stepsTaken') + 1;
+      this.set('stepsTaken', stepsTaken);
+
+      if (stepsTaken === this.get('stepsTillReproduction')) {
+        this.reproduce();
+      }
     }
 
     /**
