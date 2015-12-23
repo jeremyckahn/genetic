@@ -1,12 +1,14 @@
 define([
 
   'lodash'
+  ,'backbone'
 
   ,'./organism'
 
 ], function (
 
   _
+  ,Backbone
 
   ,Organism
 
@@ -18,7 +20,8 @@ define([
    */
   function Phenotypes (processing) {
     this.processing = processing;
-    this.organisms = [new Organism(this.processing)];
+    this.organismCollection =
+      new Backbone.Collection([new Organism({}, { env: this.processing })]);
 
     this.processing.noLoop();
     this.processing.draw = this.draw;

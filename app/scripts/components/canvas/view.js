@@ -25,21 +25,32 @@ define([
   var CanvasComponentView = Base.extend({
     template: template
 
+    ,provide: {
+      /**
+       * @return {Ojbect}
+       */
+      experiment: function () {
+        return this.experiment;
+      }
+    }
+
     /**
      * @param {Object} [options] See http://backbonejs.org/#View-constructor
      */
     ,initialize: function () {
       baseProto.initialize.apply(this, arguments);
 
-      this.processing = new Processing(this.el, this.sketch.bind(this));
+      this.experiment = null;
+      this.processing = new Processing(this.el, this.initEperiment.bind(this));
     }
 
     /**
      * @param  {Processing} processing
      * @return {Phenotypes}
      */
-    ,sketch: function (processing) {
-      return new Phenotypes(processing);
+    ,initEperiment: function (processing) {
+      this.experiment = new Phenotypes(processing);
+      return this.experiment;
     }
   });
 
