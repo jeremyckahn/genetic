@@ -14,7 +14,7 @@ define([
 
   ,template
 
-  ,phenotypes
+  ,Phenotypes
 
 ) {
   'use strict';
@@ -36,9 +36,10 @@ define([
 
     /**
      * @param  {Processing} processing
+     * @return {Phenotypes}
      */
     ,sketch: function (processing) {
-      phenotypes(processing);
+      return new Phenotypes(processing);
     }
   });
 

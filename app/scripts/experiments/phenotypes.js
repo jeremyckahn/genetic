@@ -8,8 +8,12 @@ define([
   /**
    * @param  {Processing} processing
    */
-  return function (processing) {
-    processing.size(500, 500);
-    processing.background(128, 128, 128);
-  };
+  function Phenotypes (processing) {
+    this.processing = processing;
+
+    this.processing.size(500, 500);
+    this.processing.background(128, 128, 128);
+  }
+
+  return Phenotypes;
 });
