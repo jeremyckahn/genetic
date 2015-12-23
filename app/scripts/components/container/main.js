@@ -30,7 +30,7 @@ define([
     ,template: template
 
     ,initialize: function () {
-      this.addComponent(CanvasComponent, {
+      this.canvasComponent = this.addComponent(CanvasComponent, {
         el: this.view.$canvas[0]
       });
     }

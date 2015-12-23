@@ -2,9 +2,13 @@ define([
 
   'lodash'
 
+  ,'./organism'
+
 ], function (
 
   _
+
+  ,Organism
 
 ) {
   'use strict';
@@ -14,6 +18,8 @@ define([
    */
   function Phenotypes (processing) {
     this.processing = processing;
+    this.organisms = [new Organism(this.processing)];
+
     this.processing.noLoop();
     this.processing.draw = this.draw;
     this.setup();
