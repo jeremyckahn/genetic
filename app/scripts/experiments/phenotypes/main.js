@@ -15,6 +15,8 @@ define([
 ) {
   'use strict';
 
+  var MAX_ORGANISMS = 1000;
+
   /**
    * @param  {Processing} processing
    */
@@ -27,6 +29,7 @@ define([
       new Backbone.Collection([
         new Organism({}, { processing: this.processing })
       ]);
+    this.organismCollection.on('add', this.onCollectionAdd.bind(this));
     this.scheduleUpdate();
   }
 
@@ -62,6 +65,15 @@ define([
     ,draw: function () {
       this.clearCanvas();
       this.organismCollection.invoke('renderState');
+    }
+
+    ,onCollectionAdd: function (organism, collection) {
+      if (collection.length > MAX_ORGANISMS) {
+        var difference = collection.length - MAX_ORGANISMS;
+        _.range(difference).forEach(function (i) {
+          collection.at(i).die();
+        });
+      }
     }
   });
 

@@ -34,6 +34,7 @@ define([
       ,y: 0
       ,stepsTillReproduction: 3
       ,stepsTaken: 0
+      ,isDying: false
     }
 
     /**
@@ -131,6 +132,26 @@ define([
     ,reproduce: function () {
       this.collection.add(
         new Organism(this.pick('x', 'y'), { processing: this.processing }));
+    }
+
+    ,die: function () {
+      if (this.get('isDying')) {
+        return;
+      }
+
+      this.set('isDying', true);
+      var death = new Tweenable();
+      death.tween({
+        from: { size: this.get('size') }
+        ,to: { size: 0 }
+        ,duration: this.get('growSpeed')
+        ,step: function (state) {
+          this.set('renderSize', state.size);
+        }.bind(this)
+        ,finish: function () {
+          this.collection.remove(this);
+        }.bind(this)
+      });
     }
   });
 
