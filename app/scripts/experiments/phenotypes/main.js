@@ -20,21 +20,20 @@ define([
    */
   function Phenotypes (processing) {
     this.processing = processing;
+    this.processing.noLoop();
+    this.processing.draw = this.draw.bind(this);
+    this.setup();
     this.organismCollection =
       new Backbone.Collection([
         new Organism({}, { processing: this.processing })
       ]);
-
-    this.processing.noLoop();
-    this.processing.draw = this.draw.bind(this);
-    this.setup();
+    this.tick();
   }
 
   _.extend(Phenotypes.prototype, {
     setup: function () {
       this.processing.size(500, 500);
-      this.processing.background(128, 128, 128);
-      this.tick();
+      this.clearCanvas();
     }
 
     ,scheduleUpdate: function () {
@@ -55,7 +54,12 @@ define([
       this.organismCollection.invoke('updateState');
     }
 
+    ,clearCanvas: function () {
+      this.processing.background(128, 128, 128);
+    }
+
     ,draw: function () {
+      this.clearCanvas();
       this.organismCollection.invoke('renderState');
     }
   });

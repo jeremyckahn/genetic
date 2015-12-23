@@ -31,14 +31,21 @@ define([
       this.processing = processing;
 
       this.set(_.defaults(_.clone(attrs), {
-        speed: Math.random() * 10
-        ,size: Math.random() * 10
+        speed: Math.random() * 5
+        ,size: Math.random() * 20
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
       }));
     }
 
     ,updateState: function () {
+      var speed = this.get('speed');
+
+      ['x', 'y'].forEach(function (dim) {
+        var rawValue = this.get(dim);
+        rawValue += ((speed * 2) * Math.random()) - speed;
+        this.set(dim, rawValue);
+      }.bind(this));
     }
 
     ,renderState: function () {
