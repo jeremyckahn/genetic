@@ -12,26 +12,51 @@ define([
   'use strict';
 
   var Organism = Backbone.Model.extend({
+    defaults: {
+      speed: 0
+      ,x: 0
+      ,y: 0
+    }
+
     /**
      * @param {Object} attrs
      * @param {number} [attrs.speed]
      * @param {number} [attrs.x]
      * @param {number} [attrs.y]
      * @param {Object} opts
-     * @param {Processing} opts.env
+     * @param {Processing} opts.processing
      */
-    initialize: function (attrs, opts) {
-      var env = opts.env;
-      this.set(_.defaults(_.clone(attrs || {}), {
+    ,initialize: function (attrs, opts) {
+      var processing = opts.processing;
+      this.processing = processing;
+
+      this.set(_.defaults(_.clone(attrs), {
         speed: Math.random() * 10
-        ,x: Math.random() * env.width
-        ,y: Math.random() * env.height
+        ,size: Math.random() * 10
+        ,x: Math.random() * processing.width
+        ,y: Math.random() * processing.height
       }));
     }
-  });
 
-  _.extend(Organism.prototype, {
+    ,updateState: function () {
+    }
 
+    ,renderState: function () {
+      var processing = this.processing;
+
+      // FIXME: Make this a function of the organisms' attributes
+      var color = [255, 0, 255];
+
+      processing.fill.apply(processing, color);
+      processing.stroke.apply(processing, color);
+
+      processing.ellipse(
+        this.get('x')
+        ,this.get('y')
+        ,this.get('size')
+        ,this.get('size')
+      );
+    }
   });
 
   return Organism;

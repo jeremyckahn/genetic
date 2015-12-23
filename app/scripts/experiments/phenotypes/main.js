@@ -21,10 +21,12 @@ define([
   function Phenotypes (processing) {
     this.processing = processing;
     this.organismCollection =
-      new Backbone.Collection([new Organism({}, { env: this.processing })]);
+      new Backbone.Collection([
+        new Organism({}, { processing: this.processing })
+      ]);
 
     this.processing.noLoop();
-    this.processing.draw = this.draw;
+    this.processing.draw = this.draw.bind(this);
     this.setup();
   }
 
@@ -50,11 +52,11 @@ define([
     }
 
     ,updateState: function () {
+      this.organismCollection.invoke('updateState');
     }
 
     ,draw: function () {
-      // Processing draw() operations go here
-      // FYI: this == Processing.prototype
+      this.organismCollection.invoke('renderState');
     }
   });
 
