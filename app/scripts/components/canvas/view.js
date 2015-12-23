@@ -5,12 +5,16 @@ define([
 
   ,'text!./template.mustache'
 
+  ,'scripts/experiments/phenotypes'
+
 ], function (
 
   Lateralus
   ,Processing
 
   ,template
+
+  ,phenotypes
 
 ) {
   'use strict';
@@ -30,9 +34,11 @@ define([
       this.processing = new Processing(this.el, this.sketch.bind(this));
     }
 
+    /**
+     * @param  {Processing} processing
+     */
     ,sketch: function (processing) {
-      processing.size(300, 300);
-      processing.background(128, 128, 128);
+      phenotypes(processing);
     }
   });
 
