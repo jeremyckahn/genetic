@@ -28,6 +28,8 @@ define([
       speed: 1000 * 10
       ,minSpeed: 1000
       ,size: 20
+      ,renderSize: 0
+      ,growSpeed: 1000 * 2
       ,x: 0
       ,y: 0
       ,stepsTillReproduction: 3
@@ -60,9 +62,22 @@ define([
       this.tweenable = new Tweenable();
       this.tweenable.setScheduleFunction(setTimeout);
       this.tweenToNewCoordinates();
+      this.growToFullSize();
     }
 
     ,updateState: function () {
+    }
+
+    ,growToFullSize: function () {
+      var growth = new Tweenable();
+      growth.tween({
+        from: { size: 0 }
+        ,to: { size: this.get('size') }
+        ,duration: this.get('growSpeed')
+        ,step: function (state) {
+          this.set('renderSize', state.size);
+        }.bind(this)
+      });
     }
 
     ,tweenToNewCoordinates: function () {
@@ -108,8 +123,8 @@ define([
       processing.ellipse(
         this.get('x')
         ,this.get('y')
-        ,this.get('size')
-        ,this.get('size')
+        ,this.get('renderSize')
+        ,this.get('renderSize')
       );
     }
 
