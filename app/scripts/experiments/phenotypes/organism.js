@@ -4,18 +4,29 @@ define([
   ,'backbone'
   ,'shifty'
 
+  ,'genetic/genetic.util'
+
 ], function (
 
   _
   ,Backbone
   ,Tweenable
 
+  ,util
+
 ) {
   'use strict';
 
+  // CONSTANTS
+  var MAX_TWEEN_DURATION = 1000 * 10;
+  var VALID_EASING_CURVES = Object.keys(Tweenable.prototype.formula)
+    .filter(function (formulaName) {
+      return formulaName.match(/InOut/);
+    });
+
   var Organism = Backbone.Model.extend({
     defaults: {
-      speed: 5
+      speed: 1
       ,size: 20
       ,x: 0
       ,y: 0
@@ -32,6 +43,7 @@ define([
     ,initialize: function (attrs, opts) {
       var processing = opts.processing;
       this.processing = processing;
+      this.currentTween = null;
 
       this.set(_.defaults(_.clone(attrs), {
         speed: Math.random() * this.get('speed')
@@ -39,16 +51,37 @@ define([
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
       }));
+
+      this.tweenable = new Tweenable(this.pick('x', 'y'));
+      this.tweenable.setScheduleFunction(setTimeout);
+      this.tweenToNewCoordinates();
     }
 
     ,updateState: function () {
-      var speed = this.get('speed');
+    }
 
-      ['x', 'y'].forEach(function (dim) {
-        var rawValue = this.get(dim);
-        rawValue += ((speed * 2) * Math.random()) - speed;
-        this.set(dim, rawValue);
-      }.bind(this));
+    ,tweenToNewCoordinates: function () {
+      var x = Math.random() * this.processing.width;
+      var y = Math.random() * this.processing.height;
+
+      this.currentTween = this.tweenable.tween({
+        duration: this.get('speed') * MAX_TWEEN_DURATION
+        ,from: { x: this.get('x'), y: this.get('y') }
+        ,to: { x: x, y: y }
+        ,step: this.onTweenStep.bind(this)
+        ,finish: this.tweenToNewCoordinates.bind(this)
+        ,easing: {
+          x: util.pickRandomFrom(VALID_EASING_CURVES)
+          ,y: util.pickRandomFrom(VALID_EASING_CURVES)
+        }
+      });
+    }
+
+    /**
+     * @param  {{x: number, y: number}} state
+     */
+    ,onTweenStep: function (state) {
+      this.set(state);
     }
 
     ,renderState: function () {
@@ -69,14 +102,14 @@ define([
     }
   });
 
-  var duplicateMethodNames = _.intersection(
-    _.keys(Tweenable.prototype)
-    ,_.keys(Backbone.Model.prototype)
-  );
-  _.extend(
-    Organism.prototype
-    ,_.omit.apply(_, [Tweenable.prototype].concat(duplicateMethodNames))
-  );
+  // var duplicateMethodNames = _.intersection(
+  //   _.keys(Tweenable.prototype)
+  //   ,_.keys(Backbone.Model.prototype)
+  // );
+  // _.extend(
+  //   Organism.prototype
+  //   ,_.omit.apply(_, [Tweenable.prototype].concat(duplicateMethodNames))
+  // );
 
   return Organism;
 });

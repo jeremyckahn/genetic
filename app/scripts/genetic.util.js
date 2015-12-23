@@ -26,6 +26,14 @@ define([
     getQueryParam: function (param) {
       return queryParams[param];
     }
+
+    /**
+     * @param  {Array} arr
+     * @return {*}
+     */
+    ,pickRandomFrom: function (arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
   };
 
   return util;
