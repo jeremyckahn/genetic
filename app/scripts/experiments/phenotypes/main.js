@@ -27,7 +27,7 @@ define([
       new Backbone.Collection([
         new Organism({}, { processing: this.processing })
       ]);
-    this.tick();
+    this.scheduleUpdate();
   }
 
   _.extend(Phenotypes.prototype, {
@@ -37,13 +37,14 @@ define([
     }
 
     ,scheduleUpdate: function () {
-      window.requestAnimationFrame(this.tick.bind(this));
-    }
+      // Schedule updateState with setTimeout so all state updates occur
+      setTimeout(function () {
+        this.updateState();
+        this.scheduleUpdate();
+      }.bind(this), 1000 / 60);
 
-    ,tick: function () {
-      this.updateState();
-      this.renderState();
-      this.scheduleUpdate();
+      // Schedule renderState with rAF so the browser can optimize render calls
+      window.requestAnimationFrame(this.renderState.bind(this));
     }
 
     ,renderState: function () {
