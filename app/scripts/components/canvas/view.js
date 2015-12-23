@@ -5,7 +5,7 @@ define([
 
   ,'text!./template.mustache'
 
-  ,'scripts/experiments/phenotypes'
+  ,'phenotypes'
 
 ], function (
 

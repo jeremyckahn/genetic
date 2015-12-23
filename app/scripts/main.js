@@ -30,6 +30,9 @@ require.config({
     ,location: 'bower_components/lateralus/scripts'
     ,main: 'lateralus'
   }, {
+    name: 'phenotypes'
+    ,location: 'scripts/experiments/phenotypes'
+  }, {
     name: 'genetic'
     ,location: 'scripts'
     ,main: 'genetic'
