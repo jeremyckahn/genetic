@@ -53,7 +53,7 @@ define([
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
         ,stepsTillReproduction: Math.floor(
-          (Math.random() * this.get('stepsTillReproduction')) + 1
+          (Math.random() * this.get('stepsTillReproduction')) + 2
         )
       }));
 
