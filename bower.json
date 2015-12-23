@@ -6,6 +6,7 @@
     "modernizr": "~2.7.1",
     "lateralus": "~0.9.3",
     "Processing.js": "~1.4.16",
-    "seedrandom": "~2.4.2"
+    "seedrandom": "~2.4.2",
+    "shifty": "~1.5.1"
   }
 }

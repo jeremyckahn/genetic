@@ -23,6 +23,7 @@ require.config({
     ,backbone: 'bower_components/backbone/backbone'
     ,lodash: 'bower_components/lodash/lodash'
     ,mustache: 'bower_components/mustache/mustache'
+    ,shifty: 'bower_components/shifty/dist/shifty'
     ,processing: 'bower_components/Processing.js/processing'
     ,seedrandom: 'bower_components/seedrandom/seedrandom'
   }
