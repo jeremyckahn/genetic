@@ -128,8 +128,15 @@ define([
     ,renderState: function () {
       var processing = this.processing;
 
+      var genderColor = this.get('gender') === null ? 128 : (
+        this.get('gender') === GENDER.MALE ? 0 : 255
+      );
       // FIXME: Make this a function of the organisms' attributes
-      var color = [255, 0, 255];
+      var color = [
+        genderColor
+        ,0
+        ,255
+      ];
 
       processing.fill.apply(processing, color);
       processing.stroke.apply(processing, color);
