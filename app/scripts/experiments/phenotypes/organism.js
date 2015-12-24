@@ -41,9 +41,11 @@ define([
       ,x: 0
       ,y: 0
       ,stepsTillReproduction: 3
-      ,stepsTaken: 0
+      ,stepCounter: 0
       ,isDying: false
       ,isOrigin: false
+      ,isReproducing: false
+      ,pursueeId: null
       ,gender: null
     }
 
@@ -74,13 +76,27 @@ define([
         this.maybeAssignGender();
       }
 
+      if (this.get('gender') !== null) {
+        // Nulling this value will prevent reproduction based on the number of
+        // steps taken
+        this.set('stepsTillReproduction', null);
+      }
+
       this.motion = new Tweenable();
       this.motion.setScheduleFunction(setTimeout);
       this.tweenToNewCoordinates();
       this.growToFullSize();
     }
 
-    ,updateState: function () {}
+    ,updateState: function () {
+      if (this.get('gender') === GENDER.MALE && !this.get('pursueeId')) {
+        var foundMate = this.findEligibleFemale();
+
+        if (foundMate) {
+          this.pursueMate(foundMate);
+        }
+      }
+    }
 
     ,growToFullSize: function () {
       var growth = new Tweenable();
@@ -110,11 +126,12 @@ define([
         }
       });
 
-      var stepsTaken = this.get('stepsTaken') + 1;
-      this.set('stepsTaken', stepsTaken);
+      var stepCounter = this.get('stepCounter') + 1;
+      this.set('stepCounter', stepCounter);
 
-      if (stepsTaken === this.get('stepsTillReproduction')) {
+      if (stepCounter === this.get('stepsTillReproduction')) {
         this.reproduce();
+        this.set('stepCounter', 0);
       }
     }
 
@@ -180,6 +197,27 @@ define([
       }
 
       this.set('gender', util.trueOrFalse() ? GENDER.MALE : GENDER.FEMALE);
+    }
+
+    /**
+     * @return {Organism|undefined}
+     */
+    ,findEligibleFemale: function () {
+      // TODO: Constrain the search to the male's local area (this current
+      // approach is global)
+      var nonReproducingFemale = this.collection.findWhere({
+        gender: GENDER.FEMALE
+        ,isReproducing: false
+      });
+
+      return nonReproducingFemale;
+    }
+
+    /**
+     * @param {Organism} organism
+     */
+    ,pursueMate: function (organism) {
+      this.set('pursueeId', organism.cid);
     }
   });
 
