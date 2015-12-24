@@ -60,8 +60,8 @@ define([
         )
       }));
 
-      this.tweenable = new Tweenable();
-      this.tweenable.setScheduleFunction(setTimeout);
+      this.motion = new Tweenable();
+      this.motion.setScheduleFunction(setTimeout);
       this.tweenToNewCoordinates();
       this.growToFullSize();
     }
@@ -85,7 +85,7 @@ define([
       var x = Math.random() * this.processing.width;
       var y = Math.random() * this.processing.height;
 
-      this.currentTween = this.tweenable.tween({
+      this.currentTween = this.motion.tween({
         duration: this.get('speed')
         ,from: { x: this.get('x'), y: this.get('y') }
         ,to: { x: x, y: y }
