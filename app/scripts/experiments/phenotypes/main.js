@@ -27,7 +27,11 @@ define([
     this.setup();
     this.organismCollection =
       new Backbone.Collection([
-        new Organism({}, { processing: this.processing })
+        new Organism({
+          isOrigin: true
+        }, {
+          processing: this.processing
+        })
       ]);
     this.organismCollection.on('add', this.onCollectionAdd.bind(this));
     this.scheduleUpdate();

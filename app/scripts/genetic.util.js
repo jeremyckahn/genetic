@@ -34,6 +34,13 @@ define([
     ,pickRandomFrom: function (arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
+
+    /**
+     * @return {boolean} Either true or false (50% chance)
+     */
+    ,trueOrFalse: function () {
+      return !!Math.round(Math.random());
+    }
   };
 
   return util;

@@ -23,6 +23,14 @@ define([
       return formulaName.match(/InOut/);
     });
 
+  /**
+   * @enum {number}
+   */
+  var GENDER = {
+    MALE: 0
+    ,FEMALE: 1
+  };
+
   var Organism = Backbone.Model.extend({
     defaults: {
       speed: 1000 * 10
@@ -35,6 +43,8 @@ define([
       ,stepsTillReproduction: 3
       ,stepsTaken: 0
       ,isDying: false
+      ,isOrigin: false
+      ,gender: null
     }
 
     /**
@@ -60,14 +70,17 @@ define([
         )
       }));
 
+      if (!this.get('isOrigin')) {
+        this.maybeAssignGender();
+      }
+
       this.motion = new Tweenable();
       this.motion.setScheduleFunction(setTimeout);
       this.tweenToNewCoordinates();
       this.growToFullSize();
     }
 
-    ,updateState: function () {
-    }
+    ,updateState: function () {}
 
     ,growToFullSize: function () {
       var growth = new Tweenable();
@@ -152,6 +165,14 @@ define([
           this.collection.remove(this);
         }.bind(this)
       });
+    }
+
+    ,maybeAssignGender: function () {
+      if (!util.trueOrFalse()) {
+        return;
+      }
+
+      this.set('gender', util.trueOrFalse() ? GENDER.MALE : GENDER.FEMALE);
     }
   });
 
