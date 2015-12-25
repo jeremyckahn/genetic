@@ -23,6 +23,7 @@ define([
   function Phenotypes (processing) {
     this.processing = processing;
     this.processing.noLoop();
+    this.processing.ellipseMode(this.processing.CORNER);
     this.processing.draw = this.draw.bind(this);
     this.setup();
     this.organismCollection =

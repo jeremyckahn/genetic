@@ -61,6 +61,9 @@ define([
       var processing = opts.processing;
       this.processing = processing;
       this.currentTween = null;
+      // Cached reference to another Organism for improved performance.
+      // this.get('pursueeId') should be used to maintain state instead of this.
+      this.pursuee = null;
 
       this.set(_.defaults(_.clone(attrs), {
         speed: this.get('minSpeed') + (Math.random() * this.get('speed'))
@@ -95,6 +98,16 @@ define([
         if (foundMate) {
           this.pursueMate(foundMate);
         }
+      }
+
+      var pursueeId = this.get('pursueeId');
+      if (pursueeId) {
+        var pursuee = this.pursuee;
+        var pursueeSize = pursuee.get('size');
+        this.moveTowardsCoordinates(
+          pursuee.get('x') + pursueeSize
+          ,pursuee.get('y') + pursueeSize
+        );
       }
     }
 
@@ -167,6 +180,10 @@ define([
     }
 
     ,reproduce: function () {
+      if (this.get('isDying')) {
+        return;
+      }
+
       this.collection.add(
         new Organism(this.pick('x', 'y'), { processing: this.processing }));
     }
@@ -218,6 +235,29 @@ define([
      */
     ,pursueMate: function (organism) {
       this.set('pursueeId', organism.cid);
+      this.pursuee = organism;
+
+      if (this.currentTween) {
+        this.currentTween.stop();
+      }
+    }
+
+    /**
+     * @param  {number} x
+     * @param  {number} y
+     */
+    ,moveTowardsCoordinates: function (x, y) {
+      var thisX = this.get('x');
+      var thisY = this.get('y');
+      var xDistance = x - thisX;
+      var yDistance = y - thisY;
+
+      var velocity = this.get('speed') / 100;
+      var xDelta = xDistance - velocity;
+      var yDelta = yDistance - velocity;
+
+      this.set('x', thisX + xDelta);
+      this.set('y', thisY + yDelta);
     }
   });
 
