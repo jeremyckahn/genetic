@@ -99,16 +99,6 @@ define([
           this.pursueMate(foundMate);
         }
       }
-
-      var pursueeId = this.get('pursueeId');
-      if (pursueeId) {
-        var pursuee = this.pursuee;
-        var pursueeSize = pursuee.get('size');
-        this.moveTowardsCoordinates(
-          pursuee.get('x') + pursueeSize
-          ,pursuee.get('y') + pursueeSize
-        );
-      }
     }
 
     ,growToFullSize: function () {
@@ -239,25 +229,36 @@ define([
 
       if (this.currentTween) {
         this.currentTween.stop();
+        this.currentTween = null;
       }
+
+      this.moveTowardsOrganism(this.pursuee);
     }
 
     /**
-     * @param  {number} x
-     * @param  {number} y
+     * @param  {Organism} organism
      */
-    ,moveTowardsCoordinates: function (x, y) {
-      var thisX = this.get('x');
-      var thisY = this.get('y');
-      var xDistance = x - thisX;
-      var yDistance = y - thisY;
+    ,moveTowardsOrganism: function (organism) {
+      var startingX = this.get('x');
+      var startingY = this.get('y');
 
-      var velocity = this.get('speed') / 100;
-      var xDelta = xDistance - velocity;
-      var yDelta = yDistance - velocity;
+      this.currentTween = this.motion.tween({
+        from: { d: 0 }
+        ,to: { d: 1 }
+        ,duration: this.get('speed')
+        ,step: function (state) {
+          var newCoords = Tweenable.interpolate(
+            { x: startingX, y: startingY }
+            ,{ x: organism.get('x'), y: organism.get('y') }
+            ,state.d
+          );
 
-      this.set('x', thisX + xDelta);
-      this.set('y', thisY + yDelta);
+          this.set(newCoords);
+        }.bind(this)
+        ,finish: function () {
+          this.moveTowardsOrganism(organism);
+        }.bind(this)
+      });
     }
   });
 
