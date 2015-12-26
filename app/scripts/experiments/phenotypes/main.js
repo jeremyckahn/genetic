@@ -15,7 +15,7 @@ define([
 ) {
   'use strict';
 
-  var MAX_ORGANISMS = 1000;
+  var MAX_ORGANISMS = 100;
 
   /**
    * @param  {Processing} processing
