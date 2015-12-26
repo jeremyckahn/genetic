@@ -241,18 +241,20 @@ define([
     ,moveTowardsOrganism: function (organism) {
       var startingX = this.get('x');
       var startingY = this.get('y');
+      var xCurve = util.pickRandomFrom(VALID_EASING_CURVES);
+      var yCurve = util.pickRandomFrom(VALID_EASING_CURVES);
 
       this.currentTween = this.motion.tween({
-        from: { d: 0 }
+        duration: this.get('speed')
+        ,from: { d: 0 }
         ,to: { d: 1 }
-        ,duration: this.get('speed')
         ,step: function (state) {
           var newCoords = Tweenable.interpolate(
             { x: startingX, y: startingY }
             ,{ x: organism.get('x'), y: organism.get('y') }
             ,state.d
+            ,{ x: xCurve, y: yCurve }
           );
-
           this.set(newCoords);
         }.bind(this)
         ,finish: function () {
