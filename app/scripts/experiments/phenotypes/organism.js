@@ -70,24 +70,16 @@ define([
         ,size: Math.random() * this.get('size')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
-        ,stepsTillReproduction: Math.floor(
-          (Math.random() * this.get('stepsTillReproduction')) + 2
-        )
       }));
 
       if (!this.get('isOrigin')) {
         this.maybeAssignGender();
       }
 
-      if (this.get('gender') !== null) {
-        // Nulling this value will prevent reproduction based on the number of
-        // steps taken
-        this.set('stepsTillReproduction', null);
-      }
-
+      this.setStepsUntilReproduction();
       this.motion = new Tweenable();
       this.motion.setScheduleFunction(setTimeout);
-      this.tweenToNewCoordinates();
+      this.tweenToRandomCoordinates();
       this.growToFullSize();
     }
 
@@ -98,6 +90,20 @@ define([
         if (foundMate) {
           this.pursueMate(foundMate);
         }
+      }
+    }
+
+    ,setStepsUntilReproduction: function () {
+      if (this.get('gender') === null) {
+        this.set(
+          'stepsTillReproduction'
+          ,Math.floor(
+            (Math.random() * this.get('stepsTillReproduction')) + 2)
+        );
+      } else {
+        // Nulling this value will prevent reproduction based on the number of
+        // steps taken
+        this.set('stepsTillReproduction', null);
       }
     }
 
@@ -113,7 +119,7 @@ define([
       });
     }
 
-    ,tweenToNewCoordinates: function () {
+    ,tweenToRandomCoordinates: function () {
       var x = Math.random() * this.processing.width;
       var y = Math.random() * this.processing.height;
 
@@ -122,7 +128,7 @@ define([
         ,from: { x: this.get('x'), y: this.get('y') }
         ,to: { x: x, y: y }
         ,step: this.onTweenStep.bind(this)
-        ,finish: this.tweenToNewCoordinates.bind(this)
+        ,finish: this.tweenToRandomCoordinates.bind(this)
         ,easing: {
           x: util.pickRandomFrom(VALID_EASING_CURVES)
           ,y: util.pickRandomFrom(VALID_EASING_CURVES)
@@ -176,6 +182,11 @@ define([
 
       this.collection.add(
         new Organism(this.pick('x', 'y'), { processing: this.processing }));
+
+      if (this.get('gender') === GENDER.FEMALE) {
+        this.set('isReproducing', false);
+        this.setStepsUntilReproduction();
+      }
     }
 
     ,die: function () {
@@ -221,18 +232,23 @@ define([
     }
 
     /**
-     * @param {Organism} organism
+     * @param {Organism} mate
      */
-    ,pursueMate: function (organism) {
-      this.set('pursueeId', organism.cid);
-      this.pursuee = organism;
+    ,pursueMate: function (mate) {
+      this.set('pursueeId', mate.cid);
+      this.pursuee = mate;
 
       if (this.currentTween) {
         this.currentTween.stop();
         this.currentTween = null;
       }
 
-      this.moveTowardsOrganism(this.pursuee);
+      this.moveTowardsOrganism(mate);
+      this.listenToOnce(
+        mate
+        ,'change:isReproducing'
+        ,this.onChangePursueeIsReproducing.bind(this)
+      );
     }
 
     /**
@@ -257,10 +273,29 @@ define([
           );
           this.set(newCoords);
         }.bind(this)
-        ,finish: function () {
-          this.moveTowardsOrganism(organism);
-        }.bind(this)
+        ,finish: this.impregnateMate.bind(this, organism)
       });
+    }
+
+    /**
+     * @param  {Organism} organism
+     */
+    ,impregnateMate: function (organism) {
+      organism.impregnate(this);
+    }
+
+    /**
+     * @param  {Organism} byMate
+     */
+    ,impregnate: function (/*byMate*/) {
+      this.set('isReproducing', true);
+      this.setStepsUntilReproduction();
+    }
+
+    ,onChangePursueeIsReproducing: function () {
+      this.set('pursueeId', null);
+      this.currentTween.stop();
+      this.tweenToRandomCoordinates();
     }
   });
 
