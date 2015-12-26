@@ -223,12 +223,25 @@ define([
     ,findEligibleFemale: function () {
       // TODO: Constrain the search to the male's local area (this current
       // approach is global)
-      var nonReproducingFemale = this.collection.findWhere({
+      var nonReproducingFemales = this.collection.where({
         gender: GENDER.FEMALE
         ,isReproducing: false
       });
 
-      return nonReproducingFemale;
+      var thisCoords = this.pick('x', 'y');
+      var femaleDistances = nonReproducingFemales.map(function (female) {
+        var femaleCoords = female.pick('x', 'y');
+        return util.getDistance(
+          thisCoords.x
+          ,thisCoords.y
+          ,femaleCoords.x
+          ,femaleCoords.y
+        );
+      });
+
+      var indexOfClosestFemale = util.getIndexOfSmallest(femaleDistances);
+
+      return nonReproducingFemales[indexOfClosestFemale];
     }
 
     /**

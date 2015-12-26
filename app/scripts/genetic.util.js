@@ -41,6 +41,35 @@ define([
     ,trueOrFalse: function () {
       return !!Math.round(Math.random());
     }
+
+    /**
+     * @param  {number} x1
+     * @param  {number} y1
+     * @param  {number} x2
+     * @param  {number} y2
+     * @return {number}
+     */
+    ,getDistance: function (x1, y1, x2, y2) {
+      return Math.sqrt(
+        Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2)
+      );
+    }
+
+    /**
+     * @param  {Array.<number>} numbers
+     * @return {number}
+     */
+    ,getIndexOfSmallest: function (numbers) {
+      var smallestIndex = 0;
+      var previousNumber = numbers[0];
+      numbers.slice(1).forEach(function (number, i) {
+        if (number < previousNumber) {
+          smallestIndex = i + 1;
+        }
+      });
+
+      return smallestIndex;
+    }
   };
 
   return util;
