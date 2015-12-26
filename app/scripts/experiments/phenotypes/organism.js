@@ -36,6 +36,7 @@ define([
       speed: 1000 * 10
       ,minSpeed: 1000
       ,size: 20
+      ,visionRange: 300
       ,renderSize: 0
       ,growSpeed: 1000 * 2
       ,x: 0
@@ -68,6 +69,7 @@ define([
       this.set(_.defaults(_.clone(attrs), {
         speed: this.get('minSpeed') + (Math.random() * this.get('speed'))
         ,size: Math.random() * this.get('size')
+        ,visionRange: Math.random() * this.get('visionRange')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
       }));
@@ -240,8 +242,10 @@ define([
       });
 
       var indexOfClosestFemale = util.getIndexOfSmallest(femaleDistances);
+      var closestFemale = nonReproducingFemales[indexOfClosestFemale];
 
-      return nonReproducingFemales[indexOfClosestFemale];
+      return femaleDistances[indexOfClosestFemale] <= this.get('visionRange') ?
+        closestFemale : undefined;
     }
 
     /**
