@@ -4,6 +4,7 @@ define([
   ,'backbone'
   ,'shifty'
 
+  ,'genetic/genetic.tweenable'
   ,'genetic/genetic.util'
 
 ], function (
@@ -12,6 +13,7 @@ define([
   ,Backbone
   ,Tweenable
 
+  ,GeneticTweenable
   ,util
 
 ) {
@@ -79,8 +81,7 @@ define([
       }
 
       this.setStepsUntilReproduction();
-      this.motion = new Tweenable();
-      this.motion.setScheduleFunction(setTimeout);
+      this.motion = new GeneticTweenable();
       this.tweenToRandomCoordinates();
       this.growToFullSize();
     }
@@ -110,7 +111,7 @@ define([
     }
 
     ,growToFullSize: function () {
-      var growth = new Tweenable();
+      var growth = new GeneticTweenable();
       growth.tween({
         from: { size: 0 }
         ,to: { size: this.get('size') }
@@ -197,7 +198,7 @@ define([
       }
 
       this.set('isDying', true);
-      var death = new Tweenable();
+      var death = new GeneticTweenable();
       death.tween({
         from: { size: this.get('size') }
         ,to: { size: 0 }
