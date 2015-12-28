@@ -77,7 +77,7 @@ define([
       }));
 
       if (!this.get('isOrigin')) {
-        this.maybeAssignGender();
+        this.assignGender();
       }
 
       this.setStepsUntilReproduction();
@@ -232,11 +232,7 @@ define([
       });
     }
 
-    ,maybeAssignGender: function () {
-      if (!util.trueOrFalse()) {
-        return;
-      }
-
+    ,assignGender: function () {
       this.set('gender', util.trueOrFalse() ? GENDER.MALE : GENDER.FEMALE);
     }
 
