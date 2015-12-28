@@ -20,6 +20,7 @@ define([
   'use strict';
 
   // CONSTANTS
+  var MIN_SIZE = 10;
   var VALID_EASING_CURVES = Object.keys(Tweenable.prototype.formula)
     .filter(function (formulaName) {
       return formulaName.match(/InOut/);
@@ -37,7 +38,7 @@ define([
     defaults: {
       speed: 1000 * 10
       ,minSpeed: 1000
-      ,size: 20
+      ,size: 10
       ,visionRange: 300
       ,renderSize: 0
       ,x: 0
@@ -69,7 +70,7 @@ define([
 
       this.set(_.defaults(_.clone(attrs), {
         speed: this.get('minSpeed') + (Math.random() * this.get('speed'))
-        ,size: Math.random() * this.get('size')
+        ,size: MIN_SIZE + (Math.random() * this.get('size'))
         ,visionRange: Math.random() * this.get('visionRange')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
