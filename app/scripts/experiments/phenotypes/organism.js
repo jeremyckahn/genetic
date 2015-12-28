@@ -151,7 +151,8 @@ define([
      * @param  {{x: number, y: number}} state
      */
     ,onTweenStep: function (state) {
-      this.set(state);
+      this.attributes.x = state.x;
+      this.attributes.y = state.y;
     }
 
     ,renderState: function () {
@@ -315,7 +316,8 @@ define([
             ,state.d
             ,{ x: xCurve, y: yCurve }
           );
-          this.set(newCoords);
+          this.attributes.x = newCoords.x;
+          this.attributes.y = newCoords.y;
         }.bind(this)
         ,finish: this.impregnateMate.bind(this, organism)
       });

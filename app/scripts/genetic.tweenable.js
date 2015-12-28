@@ -11,6 +11,10 @@ define([
 ) {
   'use strict';
 
+  // This causes a significant performance improvement by making Shifty skip a
+  // lot of processing that isn't needed in this application.
+  Tweenable.prototype.filter = {};
+
   /**
    * @extends {Tweenable}
    */
