@@ -40,7 +40,6 @@ define([
       ,size: 20
       ,visionRange: 300
       ,renderSize: 0
-      ,growSpeed: 1000 * 2
       ,x: 0
       ,y: 0
       ,stepsTillReproduction: 3
@@ -115,7 +114,7 @@ define([
       growth.tween({
         from: { size: 0 }
         ,to: { size: this.get('size') }
-        ,duration: this.get('growSpeed')
+        ,duration: this.get('speed')
         ,step: function (state) {
           this.set('renderSize', state.size);
         }.bind(this)
@@ -222,7 +221,7 @@ define([
       death.tween({
         from: { size: this.get('size') }
         ,to: { size: 0 }
-        ,duration: this.get('growSpeed')
+        ,duration: this.get('speed')
         ,step: function (state) {
           this.set('renderSize', state.size);
         }.bind(this)
