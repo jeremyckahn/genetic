@@ -170,9 +170,28 @@ define([
       processing.fill.apply(processing, color);
       processing.stroke.apply(processing, color);
 
+      var x = this.get('x');
+      var y = this.get('y');
+
+      var pursueeId = this.get('pursueeId');
+      if (pursueeId) {
+        var pursuee = this.collection.get(pursueeId);
+        var pursueeX = pursuee.get('x');
+        var pursueeY = pursuee.get('y');
+        var pursueeRenderSizeHalf = pursuee.get('renderSize') / 2;
+        var renderSizeHalf = this.get('renderSize') / 2;
+        processing.stroke(255, 255, 128);
+        processing.line(
+          x + renderSizeHalf
+          ,y + renderSizeHalf
+          ,pursueeX + pursueeRenderSizeHalf
+          ,pursueeY + pursueeRenderSizeHalf
+        );
+      }
+
       processing.ellipse(
-        this.get('x')
-        ,this.get('y')
+        x
+        ,y
         ,this.get('renderSize')
         ,this.get('renderSize')
       );
@@ -262,10 +281,17 @@ define([
       }
 
       this.moveTowardsOrganism(mate);
+
       this.listenToOnce(
         mate
         ,'change:isReproducing'
         ,this.onChangePursueeIsReproducing.bind(this)
+      );
+
+      this.listenToOnce(
+        mate
+        ,'remove'
+        ,this.onPursueeRemoved.bind(this)
       );
     }
 
@@ -314,6 +340,10 @@ define([
       this.set('pursueeId', null);
       this.currentTween.stop();
       this.tweenToRandomCoordinates();
+    }
+
+    ,onPursueeRemoved: function () {
+      this.set('pursueeId', null);
     }
   });
 
