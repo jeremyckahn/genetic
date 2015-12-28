@@ -100,13 +100,10 @@ define([
       if (this.get('gender') === null) {
         this.set(
           'stepsTillReproduction'
-          ,Math.floor(
-            (Math.random() * this.get('stepsTillReproduction')) + 2)
+          ,Math.ceil(
+            Math.random() * this.get('stepsTillReproduction')
+          )
         );
-      } else {
-        // Nulling this value will prevent reproduction based on the number of
-        // steps taken
-        this.set('stepsTillReproduction', null);
       }
     }
 
@@ -330,7 +327,11 @@ define([
      * @param  {Organism} byMate
      */
     ,impregnate: function (/*byMate*/) {
-      this.set('isReproducing', true);
+      this.set({
+        isReproducing: true
+        ,stepCounter: 0
+      });
+
       this.setStepsUntilReproduction();
     }
 
