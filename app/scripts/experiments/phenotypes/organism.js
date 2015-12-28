@@ -97,14 +97,12 @@ define([
     }
 
     ,setStepsUntilReproduction: function () {
-      if (this.get('gender') === null) {
-        this.set(
-          'stepsTillReproduction'
-          ,Math.ceil(
-            Math.random() * this.get('stepsTillReproduction')
-          )
-        );
-      }
+      this.set(
+        'stepsTillReproduction'
+        ,2 + Math.ceil(
+          Math.random() * this.get('stepsTillReproduction')
+        )
+      );
     }
 
     ,growToFullSize: function () {
@@ -138,7 +136,11 @@ define([
       var stepCounter = this.get('stepCounter') + 1;
       this.set('stepCounter', stepCounter);
 
-      if (stepCounter === this.get('stepsTillReproduction')) {
+      if (stepCounter === this.get('stepsTillReproduction') && (
+          (this.get('gender') === GENDER.FEMALE && this.get('isReproducing')) ||
+            this.get('gender') === null
+          )
+        ) {
         this.reproduce();
         this.set('stepCounter', 0);
       }
