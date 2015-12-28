@@ -1,13 +1,15 @@
 define([
 
-  'lodash'
+  'jquery'
+  ,'lodash'
   ,'backbone'
 
   ,'./organism'
 
 ], function (
 
-  _
+  $
+  ,_
   ,Backbone
 
   ,Organism
@@ -15,6 +17,7 @@ define([
 ) {
   'use strict';
 
+  var $win = $(window);
   var MAX_ORGANISMS = 100;
 
   /**
@@ -36,11 +39,13 @@ define([
       ]);
     this.organismCollection.on('add', this.onCollectionAdd.bind(this));
     this.scheduleUpdate();
+
+    $win.on('resize', this.onWindowResize.bind(this));
   }
 
   _.extend(Phenotypes.prototype, {
     setup: function () {
-      this.processing.size(500, 500);
+      this.resizeCanvas();
       this.clearCanvas();
     }
 
@@ -72,6 +77,13 @@ define([
       this.organismCollection.invoke('renderState');
     }
 
+    ,resizeCanvas: function () {
+      this.processing.size(
+        $win.width()
+        ,$win.height()
+      );
+    }
+
     ,onCollectionAdd: function (organism, collection) {
       if (collection.length > MAX_ORGANISMS) {
         var difference = collection.length - MAX_ORGANISMS;
@@ -79,6 +91,10 @@ define([
           collection.at(i).die();
         });
       }
+    }
+
+    ,onWindowResize: function () {
+      this.resizeCanvas();
     }
   });
 
