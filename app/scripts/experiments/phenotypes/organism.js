@@ -21,6 +21,8 @@ define([
 
   // CONSTANTS
   var MIN_SIZE = 10;
+  var VISION_RANGE_MULTIPLIER = 30;
+  var MOVEMENT_RANGE_MULTIPLIER = 40;
   var VALID_EASING_CURVES = Object.keys(Tweenable.prototype.formula)
     .filter(function (formulaName) {
       return formulaName.match(/InOut/);
@@ -39,8 +41,8 @@ define([
       speed: 1000 * 6
       ,minSpeed: 1000
       ,size: 10
-      ,visionRange: 300
-      ,movementRange: 400
+      ,visionRange: 0
+      ,movementRange: 0
       ,renderSize: 0
       ,x: 0
       ,y: 0
@@ -69,11 +71,13 @@ define([
       // this.get('pursueeId') should be used to maintain state instead of this.
       this.pursuee = null;
 
+      var baseSize = (Math.random() * this.get('size'));
+
       this.set(_.defaults(_.clone(attrs), {
         speed: this.get('minSpeed') + (Math.random() * this.get('speed'))
-        ,size: MIN_SIZE + (Math.random() * this.get('size'))
-        ,visionRange: Math.random() * this.get('visionRange')
-        ,movementRange: Math.random() * this.get('movementRange')
+        ,size: MIN_SIZE + baseSize
+        ,visionRange: baseSize * VISION_RANGE_MULTIPLIER
+        ,movementRange: baseSize * MOVEMENT_RANGE_MULTIPLIER
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
       }));
