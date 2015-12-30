@@ -53,6 +53,7 @@ define([
       ,isReproducing: false
       ,pursueeId: null
       ,gender: null
+      ,offspringGenes: '{}'
     }
 
     /**
@@ -217,8 +218,13 @@ define([
         return;
       }
 
+      var attrs = _.extend(
+        this.pick('x', 'y')
+        ,JSON.parse(this.get('offspringGenes'))
+      );
+
       this.collection.add(
-        new Organism(this.pick('x', 'y'), { processing: this.processing }));
+        new Organism(attrs, { processing: this.processing }));
 
       if (this.get('gender') === GENDER.FEMALE) {
         this.set('isReproducing', false);
@@ -341,15 +347,44 @@ define([
     }
 
     /**
-     * @param  {Organism} byMate
+     * @param  {Organism} byFather
      */
-    ,impregnate: function (/*byMate*/) {
+    ,impregnate: function (byFather) {
       this.set({
         isReproducing: true
         ,stepCounter: 0
+        ,offspringGenes: JSON.stringify(this.getOffspringGenes(byFather, this))
       });
 
       this.setStepsUntilReproduction();
+    }
+
+    /**
+     * @param  {Organism} mother
+     * @param  {Organism} father
+     * @return {Object}
+     */
+    ,getOffspringGenes: function (mother, father) {
+      var genes = {};
+      [
+        'speed'
+        ,'size'
+        ,'stepsTillReproduction'
+      ].forEach(function (property) {
+        var random = Math.round(10 * Math.random());
+
+        if (random < 3) {
+          genes[property] = mother.get(property);
+        } else if (random < 6) {
+          genes[property] = father.get(property);
+        } else {
+          genes[property] = Math.round(
+            (mother.get(property) + father.get(property)) / 2
+          );
+        }
+      });
+
+      return genes;
     }
 
     ,onChangePursueeIsReproducing: function () {
