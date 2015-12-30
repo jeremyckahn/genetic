@@ -36,10 +36,11 @@ define([
 
   var Organism = Backbone.Model.extend({
     defaults: {
-      speed: 1000 * 10
+      speed: 1000 * 6
       ,minSpeed: 1000
       ,size: 10
       ,visionRange: 300
+      ,movementRange: 400
       ,renderSize: 0
       ,x: 0
       ,y: 0
@@ -72,6 +73,7 @@ define([
         speed: this.get('minSpeed') + (Math.random() * this.get('speed'))
         ,size: MIN_SIZE + (Math.random() * this.get('size'))
         ,visionRange: Math.random() * this.get('visionRange')
+        ,movementRange: Math.random() * this.get('movementRange')
         ,x: Math.random() * processing.width
         ,y: Math.random() * processing.height
       }));
@@ -118,12 +120,21 @@ define([
     }
 
     ,tweenToRandomCoordinates: function () {
-      var x = Math.random() * this.processing.width;
-      var y = Math.random() * this.processing.height;
+      var currentX = this.get('x');
+      var currentY = this.get('y');
+      var movementRange = this.get('movementRange');
+
+      var x = currentX +
+        (-movementRange + (Math.random() * (2 * movementRange)));
+      x = Math.min(Math.max(0, x), this.processing.width);
+
+      var y = currentY +
+        (-movementRange + (Math.random() * (2 * movementRange)));
+      y = Math.min(Math.max(0, y), this.processing.height);
 
       this.currentTween = this.motion.tween({
         duration: this.get('speed')
-        ,from: { x: this.get('x'), y: this.get('y') }
+        ,from: { x: currentX, y: currentY }
         ,to: { x: x, y: y }
         ,step: this.onTweenStep.bind(this)
         ,finish: this.tweenToRandomCoordinates.bind(this)
